@@ -1,17 +1,24 @@
 <template>
   <div id="app">
-    <p>{{ message }}</p>
+    <v-app>
+      <p>{{ message }}</p>
+      <catFood/>
+    </v-app>
   </div>
 </template>
 
 <script>
+import catFood from "./packs/components/cat-food.vue";
 export default {
-  data: function () {
+  data: function() {
     return {
-      message: "Hello Vue!"
-    }
+      message: "Cat foods"
+    };
+  },
+  components: {
+    catFood: catFood
   }
-}
+};
 </script>
 
 <style scoped>

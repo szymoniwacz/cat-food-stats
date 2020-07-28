@@ -1,0 +1,134 @@
+<template>
+  <v-data-table :headers="headers" :items="catFoods" sort-by="name" class="elevation-1">
+    <template v-slot:top>
+      <v-toolbar flat color="white">
+        <v-toolbar-title>Cat Foods</v-toolbar-title>
+        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on }">
+            <v-btn color="primary" dark class="mb-2" v-on="on">New Cat Food</v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="headline">{{ formTitle }}</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.name" label="Cat food name"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.ingredients" label="Ingredients"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+    <template v-slot:item.action="{ item }">
+      <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon>
+      <v-icon small @click="deleteItem(item)">delete</v-icon>
+    </template>
+    <template v-slot:no-data>
+      <v-btn color="primary" @click="initialize">Reset</v-btn>
+    </template>
+  </v-data-table>
+</template>
+
+<script>
+  export default {
+    data: () => ({
+      dialog: false,
+      headers: [
+        {
+          text: "Name",
+          align: "left",
+          value: "name"
+        },
+        { text: "Ingredients", value: "ingredients" },
+        { text: "Actions", value: "action", sortable: false }
+      ],
+      catFoods: [],
+      editedIndex: -1,
+      editedItem: {
+        name: "",
+        ingredients: ""
+      },
+      defaultItem: {
+        name: "",
+        ingredients: ""
+      }
+    }),
+
+    computed: {
+      formTitle() {
+        return this.editedIndex === -1 ? "New Cat Food" : "Edit Cat Food";
+      }
+    },
+
+    watch: {
+      dialog(val) {
+        val || this.close();
+      }
+    },
+
+    created() {
+      this.initialize();
+    },
+
+    methods: {
+      initialize() {
+        this.catFoods = [
+          {
+            name: "Catz Finefood Veal",
+            ingredients: "70% veal (muscle meat, heart, liver, lungs, kidney), 26.6% drinking water, 1% apricots, 1% pineapple, 1% minerals, 0.15% linseed oil, 0.15% sea salt, 0.1% seaweed"
+          },
+          {
+            name: "Catz Finefood Poultry",
+            ingredients: "69% poultry (muscle meat, heart, stomach, liver and neck), 26.85% drinking water, 2% cranberries, 1% dandelion, 1% minerals, 0.15% safflower oil"
+          }
+        ];
+      },
+
+      editItem(item) {
+        this.editedIndex = this.catFoods.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialog = true;
+      },
+
+      deleteItem(item) {
+        const index = this.catFoods.indexOf(item);
+        confirm("Are you sure you want to delete this item?") &&
+        this.catFoods.splice(index, 1);
+      },
+
+      close() {
+        this.dialog = false;
+        setTimeout(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        }, 300);
+      },
+
+      save() {
+        if (this.editedIndex > -1) {
+          Object.assign(this.catFoods[this.editedIndex], this.editedItem);
+        } else {
+          this.catFoods.push(this.editedItem);
+        }
+        this.close();
+      }
+    }
+  };
+</script>
