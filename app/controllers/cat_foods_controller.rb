@@ -24,6 +24,15 @@ class CatFoodsController < ApplicationController
     end
   end
 
+  def destroy
+    @cat_food = CatFood.find(params[:id])
+    if @cat_food.destroy
+      render json: { json: 'Cat food was successfully deleted.'}
+    else
+      render json: { json: @cat_food.errors, status: :unprocessable_entity }
+    end
+  end
+
   private
 
   def cat_food_params

@@ -116,9 +116,17 @@
 
       deleteItem(item) {
         const index = this.catFoods.indexOf(item);
-        confirm("Are you sure you want to delete this item?") &&
-        this.catFoods.splice(index, 1);
-      },
+        confirm("Are you sure you want to delete this cat food?");
+        api.delete(`http://localhost:3000/cat_foods/${item.id}`)
+          .then(response => {
+            alert(response.data.json);
+            this.initialize();
+          })
+          .catch(error => {
+            console.log(error);
+          });
+          this.catFoods.splice(index, 1);
+        },
 
       close() {
         this.dialog = false;
