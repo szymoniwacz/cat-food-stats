@@ -132,7 +132,15 @@
         if (this.editedIndex > -1) {
           Object.assign(this.catFoods[this.editedIndex], this.editedItem);
         } else {
-          this.catFoods.push(this.editedItem);
+          api.post(`http://localhost:3000/cat_foods/`, {
+            cat_food: this.editedItem
+          })
+          .then(response => {
+            this.initialize();
+          })
+          .catch(error => {
+            console.log(error);
+          });
         }
         this.close();
       }
