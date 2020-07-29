@@ -48,6 +48,15 @@
 
 <script>
   import axios from "axios";
+
+  const api = axios.create({
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.head.querySelector('[name=csrf-token]').content,
+    },
+  });
+
   export default {
     data: () => ({
       dialog: false,
@@ -90,16 +99,13 @@
 
     methods: {
       initialize() {
-        this.catFoods = [
-          {
-            name: "Catz Finefood Veal",
-            ingredients: "70% veal (muscle meat, heart, liver, lungs, kidney), 26.6% drinking water, 1% apricots, 1% pineapple, 1% minerals, 0.15% linseed oil, 0.15% sea salt, 0.1% seaweed"
-          },
-          {
-            name: "Catz Finefood Poultry",
-            ingredients: "69% poultry (muscle meat, heart, stomach, liver and neck), 26.85% drinking water, 2% cranberries, 1% dandelion, 1% minerals, 0.15% safflower oil"
-          }
-        ];
+        return api.get("http://localhost:3000/cat_foods")
+        .then(response => {
+          this.catFoods = response.data;
+        })
+        .catch(e => {
+          console.log(e);
+        });
       },
 
       editItem(item) {
