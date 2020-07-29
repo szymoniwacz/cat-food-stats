@@ -15,6 +15,15 @@ class CatFoodsController < ApplicationController
     end
   end
 
+  def update
+    @cat_food = CatFood.find(params[:id])
+    if @cat_food.update(cat_food_params)
+      render json: { status: :ok, message: 'Success' }
+    else
+      render json: { json: @cat_food.errors, status: :unprocessable_entity }
+    end
+  end
+
   private
 
   def cat_food_params

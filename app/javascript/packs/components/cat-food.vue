@@ -109,7 +109,7 @@
       },
 
       editItem(item) {
-        this.editedIndex = this.catFoods.indexOf(item);
+        this.editedIndex = item.id;
         this.editedItem = Object.assign({}, item);
         this.dialog = true;
       },
@@ -130,7 +130,16 @@
 
       save() {
         if (this.editedIndex > -1) {
-          Object.assign(this.catFoods[this.editedIndex], this.editedItem);
+          api.put(`http://localhost:3000/cat_foods/${this.editedItem.id}`, {
+            name: this.editedItem.name,
+            ingredients: this.editedItem.ingredients,
+          })
+          .then(response => {
+            this.initialize();
+          })
+          .catch(error => {
+            console.log(error);
+          });
         } else {
           api.post(`http://localhost:3000/cat_foods/`, {
             cat_food: this.editedItem
